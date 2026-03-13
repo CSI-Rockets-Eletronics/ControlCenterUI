@@ -6,24 +6,17 @@ export const activePanelSchema = z.enum(["standby", "launch", "recovery"]);
 
 export type ActivePanel = z.infer<typeof activePanelSchema>;
 
+export const armStatusSchema = z.record(z.boolean());
+export type ArmStatus = z.infer<typeof armStatusSchema>;
+
+export const preFillChecklistSchema = z.record(z.boolean());
+export type PreFillChecklist = z.infer<typeof preFillChecklistSchema>;
+
+export const rangePermitSchema = z.record(z.boolean());
+export type RangePermit = z.infer<typeof rangePermitSchema>;
+
 export const launchStateSchema = z.object({
   activePanel: activePanelSchema,
-  preFillChecklist: z.object({
-    fillRelay: z.boolean(),
-    abortRelay: z.boolean(),
-    fireRelay: z.boolean(),
-    fillSolenoid: z.boolean(),
-    abortSolenoid: z.boolean(),
-    wetGround: z.boolean(),
-    openTank: z.boolean(),
-  }),
-  goPoll: z.object({
-    safetyOfficer1: z.boolean(),
-    safetyOfficer2: z.boolean(),
-    adviser: z.boolean(),
-    propLead: z.boolean(),
-    elecLead: z.boolean(),
-  }),
   mainStatus: z.object({
     batteryConnected: z.boolean(),
     fillTankOpen: z.boolean(),
@@ -31,37 +24,15 @@ export const launchStateSchema = z.object({
     mechPowerOn: z.boolean(),
     manualFire: z.boolean().default(false),
   }),
-  armStatus: z.object({
-    commandCenter: z.boolean(),
-    abortControl: z.boolean(),
-  }),
-  rangePermit: z.object({
-    safetyOfficer1: z.boolean(),
-    safetyOfficer2: z.boolean(),
-    adviser: z.boolean(),
-  }),
+  armStatus: armStatusSchema.default({}),
+  preFillChecklist: preFillChecklistSchema.default({}),
+  rangePermit: rangePermitSchema.default({}),
 });
 
 export type LaunchState = z.infer<typeof launchStateSchema>;
 
 export const initialLaunchState: LaunchState = {
   activePanel: "standby",
-  preFillChecklist: {
-    fillRelay: false,
-    abortRelay: false,
-    fireRelay: false,
-    fillSolenoid: false,
-    abortSolenoid: false,
-    wetGround: false,
-    openTank: false,
-  },
-  goPoll: {
-    safetyOfficer1: false,
-    safetyOfficer2: false,
-    adviser: false,
-    propLead: false,
-    elecLead: false,
-  },
   mainStatus: {
     batteryConnected: false,
     fillTankOpen: false,
@@ -69,13 +40,7 @@ export const initialLaunchState: LaunchState = {
     mechPowerOn: false,
     manualFire: false,
   },
-  armStatus: {
-    commandCenter: false,
-    abortControl: false,
-  },
-  rangePermit: {
-    safetyOfficer1: false,
-    safetyOfficer2: false,
-    adviser: false,
-  },
+  armStatus: {},
+  preFillChecklist: {},
+  rangePermit: {},
 };

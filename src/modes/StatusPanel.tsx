@@ -9,15 +9,16 @@ import {
   useState,
 } from "react";
 
+import { Panel } from "@/components/design/panel";
+import { StatusDisplay } from "@/components/design/statusDisplay";
+import { useLaunchMachineSelector } from "@/components/launchMachineProvider";
 import { computeNitrousMass } from "@/lib/coolprop";
 import { type DeviceStates } from "@/machines/launchMachine";
 
-import { Panel } from "./design/panel";
-import { StatusDisplay } from "./design/statusDisplay";
-import { useLaunchMachineSelector } from "./launchMachineProvider";
-
 const StationChart = lazy(() =>
-  import("./stationChart").then((res) => ({ default: res.StationChart })),
+  import("@/components/stationChart").then((res) => ({
+    default: res.StationChart,
+  })),
 );
 
 const ChartLoadingFallback = memo(function ChartLoadingFallback({
@@ -219,28 +220,28 @@ export const StatusPanel = memo(function StatusPanel() {
       ) : (
         <div className="grid grid-cols-3 gap-4">
           <StatusDisplayWithChart
-            label="Lox Upper (PSI)"
+            label="Oxtank 1 Median (PSI)"
             // eslint-disable-next-line react-perf/jsx-no-new-function-as-prop
             selector={({ fsLoxGn2Transducers: rec }) =>
               rec && { ts: rec.ts, value: rec.data.oxtank_1_median }
             }
           />
           <StatusDisplayWithChart
-            label="Combustion Chamber (PSI)"
+            label="Oxtank 2 Median (PSI)"
             // eslint-disable-next-line react-perf/jsx-no-new-function-as-prop
             selector={({ fsLoxGn2Transducers: rec }) =>
               rec && { ts: rec.ts, value: rec.data.oxtank_2_median }
             }
           />
           <StatusDisplayWithChart
-            label="GN2 1 (PSI)"
+            label="COPV 1 Median (PSI)"
             // eslint-disable-next-line react-perf/jsx-no-new-function-as-prop
             selector={({ fsLoxGn2Transducers: rec }) =>
               rec && { ts: rec.ts, value: rec.data.copv_1_median }
             }
           />
           <StatusDisplayWithChart
-            label="GN2 2 (PSI)"
+            label="COPV 2 Median (PSI)"
             // eslint-disable-next-line react-perf/jsx-no-new-function-as-prop
             selector={({ fsLoxGn2Transducers: rec }) =>
               rec && { ts: rec.ts, value: rec.data.copv_2_median }

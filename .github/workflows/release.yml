@@ -2,27 +2,38 @@ name: Build Static Site and Release to Public Repo
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    tags:
+      - "v*"  
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.1.1
-      - run: bun install --frozen-lockfile
-      - run: bun run build
-      - run: bun run build:rockets-ui
-      - run: zip -r dist.zip dist
-      - run: zip -r dist-rockets-ui.zip dist-rockets-ui
-      - uses: softprops/action-gh-release@v1
+          bun-version: 1.3.5
+
+      - name: Install & Build
+        run: |
+          bun install --frozen-lockfile
+          # Build both versions
+          RELEASE_TAG=dist BASE_PATH=/ bun run build
+          RELEASE_TAG=dist-rockets-ui BASE_PATH=/rockets-ui/ bun run build
+
+      - name: Archive Files
+        run: |
+          zip -r dist.zip dist
+          zip -r dist-rockets-ui.zip dist-rockets-ui
+
+      - name: Create Named Release
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.run_number }}
+          tag_name: ${{ github.ref_name }}
+          name: "Release ${{ github.ref_name }}"
+
+          make_latest: true
+
           repository: CSI-Rockets-Eletronics/ControlCenterUI-Release
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           files: |
